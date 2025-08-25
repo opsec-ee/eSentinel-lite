@@ -1,6 +1,9 @@
 ![eSentinel](images/eSentinel_Banner.png)
 
 # eSentinel-lite
+
+**A Lightweight VPN-First Firewall Security Framework for Linux**
+
 Lightweight version of eSentinel security monitoring tool
 
 ## License
