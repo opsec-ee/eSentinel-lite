@@ -1,4 +1,4 @@
-![eSentinel](eSentinel_Banner.png)
+![eSentinel](images/eSentinel_Banner.png)
 
 # eSentinel-lite
 Lightweight version of eSentinel security monitoring tool
