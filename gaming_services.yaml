@@ -1,0 +1,197 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: Gaming Services Data
+# Description: Network ranges and ports for gaming platforms
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+# Gaming Platforms
+steam:
+  name: "Steam Gaming Platform"
+  tcp_ports: [27015, 27036, 27037]
+  udp_ports: [27015, 27031, 27036]
+  ip_ranges:
+    - "208.64.200.0/21"
+    - "208.64.208.0/21"
+    - "208.78.164.0/22"
+    - "155.133.224.0/19"
+  domains:
+    - "steampowered.com"
+    - "steamcontent.com"
+    - "steamstatic.com"
+    - "steamcommunity.com"
+  priority: "high"
+
+discord:
+  name: "Discord Gaming Communication"
+  tcp_ports: [443, 80]
+  udp_ports: [50000-65535]
+  ip_ranges:
+    # From your existing SecondLife ranges - Discord uses similar CDN
+    - "34.0.64.0/19"
+    - "34.0.128.0/17"
+    - "35.208.0.0/13"
+    - "66.22.200.0/21"
+    - "66.22.208.0/20"
+    - "66.22.224.0/22"
+    - "66.22.230.0/23"
+    - "138.128.136.0/21"
+  domains:
+    - "discord.com"
+    - "discordapp.com"
+    - "discord.gg"
+    - "discordcdn.com"
+  priority: "high"
+
+# Individual Game Services
+valorant:
+  name: "Valorant (Riot Games)"
+  tcp_ports: [443, 80]
+  udp_ports: [7000-8000]
+  ip_ranges:
+    - "162.249.72.0/21"
+    - "185.40.64.0/19"
+    - "104.160.131.0/24"
+  domains:
+    - "riotgames.com"
+    - "valorant.com"
+  priority: "high"
+
+league_of_legends:
+  name: "League of Legends (Riot Games)"
+  tcp_ports: [443, 80, 8393-8400]
+  udp_ports: [5000-5500]
+  ip_ranges:
+    - "162.249.72.0/21"
+    - "185.40.64.0/19"
+    - "104.160.131.0/24"
+  domains:
+    - "riotgames.com"
+    - "leagueoflegends.com"
+  priority: "high"
+
+minecraft:
+  name: "Minecraft"
+  tcp_ports: [25565]
+  udp_ports: [19132]
+  ip_ranges: []  # Varies by server
+  domains:
+    - "minecraft.net"
+    - "mojang.com"
+  note: "Server IPs vary by hosting provider"
+  priority: "medium"
+
+counter_strike:
+  name: "Counter-Strike (Valve)"
+  tcp_ports: [27015, 27036]
+  udp_ports: [27015, 27031]
+  ip_ranges:
+    - "208.64.200.0/21"
+    - "208.64.208.0/21"
+  domains:
+    - "steampowered.com"
+  priority: "high"
+
+call_of_duty:
+  name: "Call of Duty (Activision)"
+  tcp_ports: [3074, 53, 80, 500, 3544, 4500]
+  udp_ports: [88, 3074, 53, 500, 3544, 4500]
+  ip_ranges:
+    - "185.60.112.0/22"
+    - "185.60.114.0/24"
+  domains:
+    - "callofduty.com"
+    - "activision.com"
+  priority: "high"
+
+overwatch:
+  name: "Overwatch (Blizzard)"
+  tcp_ports: [1119, 80, 443]
+  udp_ports: [1119]
+  ip_ranges:
+    - "24.105.29.76/32"
+    - "24.105.62.129/32"
+    - "137.221.105.152/32"
+  domains:
+    - "battle.net"
+    - "blizzard.com"
+  priority: "high"
+
+apex_legends:
+  name: "Apex Legends (EA)"
+  tcp_ports: [443, 80]
+  udp_ports: [37015, 37016]
+  ip_ranges:
+    - "159.153.64.0/18"
+    - "159.153.192.0/18"
+  domains:
+    - "ea.com"
+    - "origin.com"
+  priority: "high"
+
+# Gaming Platforms
+epic_games:
+  name: "Epic Games Store"
+  tcp_ports: [443, 80]
+  udp_ports: [5222]
+  ip_ranges:
+    - "23.32.0.0/11"
+    - "23.64.0.0/14"
+  domains:
+    - "epicgames.com"
+    - "unrealengine.com"
+  priority: "medium"
+
+battle_net:
+  name: "Battle.net (Blizzard)"
+  tcp_ports: [1119, 80, 443, 6113]
+  udp_ports: [1119, 6113]
+  ip_ranges:
+    - "24.105.29.76/32"
+    - "24.105.62.129/32"
+    - "137.221.105.152/32"
+  domains:
+    - "battle.net"
+    - "blizzard.com"
+  priority: "high"
+
+# Console Gaming
+xbox_live:
+  name: "Xbox Live"
+  tcp_ports: [53, 80, 443]
+  udp_ports: [88, 3074, 53, 500, 3544, 4500]
+  ip_ranges:
+    - "157.55.130.0/24"
+    - "157.56.91.77/32"
+  domains:
+    - "xbox.com"
+    - "xboxlive.com"
+  priority: "high"
+
+playstation_network:
+  name: "PlayStation Network"
+  tcp_ports: [80, 443, 993]
+  udp_ports: [88, 3478, 3479, 3480]
+  ip_ranges:
+    - "185.88.181.0/24"
+    - "185.88.180.0/24"
+  domains:
+    - "playstation.com"
+    - "sony.com"
+  priority: "high"
+
+nintendo_switch:
+  name: "Nintendo Switch Online"
+  tcp_ports: [6667, 12400, 28910]
+  udp_ports: [1024-65535]
+  ip_ranges:
+    - "103.28.54.0/24"
+    - "185.15.20.0/24"
+  domains:
+    - "nintendo.com"
+    - "nintendo.net"
+  priority: "medium"

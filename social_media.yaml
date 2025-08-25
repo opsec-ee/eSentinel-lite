@@ -1,0 +1,230 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: Social Media Services Data
+# Description: Network ranges and ports for social platforms
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+# Meta/Facebook Services
+facebook:
+  name: "Facebook"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "31.13.24.0/21"
+    - "31.13.64.0/18"
+    - "66.220.144.0/20"
+    - "69.63.176.0/20"
+    - "173.252.64.0/18"
+    - "179.60.192.0/22"
+  domains:
+    - "facebook.com"
+    - "fbcdn.net"
+    - "facebook.net"
+    - "fbsbx.com"
+  privacy_concerns: "high"
+  tracking: "extensive"
+
+instagram:
+  name: "Instagram"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "31.13.24.0/21"
+    - "31.13.64.0/18"
+    - "66.220.144.0/20"
+    - "173.252.64.0/18"
+  domains:
+    - "instagram.com"
+    - "cdninstagram.com"
+    - "fbcdn.net"
+  privacy_concerns: "high"
+  tracking: "extensive"
+
+whatsapp:
+  name: "WhatsApp"
+  tcp_ports: [443, 80]
+  udp_ports: [3478, 45395]
+  ip_ranges:
+    - "31.13.24.0/21"
+    - "31.13.64.0/18"
+    - "173.252.64.0/18"
+  domains:
+    - "whatsapp.com"
+    - "whatsapp.net"
+  privacy_concerns: "medium"
+  encryption: "end_to_end"
+
+# Twitter/X
+twitter:
+  name: "Twitter/X"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "104.244.42.0/21"
+    - "192.133.76.0/22"
+    - "199.16.156.0/22"
+    - "199.59.148.0/22"
+  domains:
+    - "twitter.com"
+    - "x.com"
+    - "twimg.com"
+    - "t.co"
+  privacy_concerns: "medium"
+  tracking: "moderate"
+
+# TikTok
+tiktok:
+  name: "TikTok"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "161.117.0.0/16"
+    - "202.6.233.0/24"
+    - "203.205.128.0/17"
+  domains:
+    - "tiktok.com"
+    - "tiktokcdn.com"
+    - "byteoversea.com"
+  privacy_concerns: "very_high"
+  data_collection: "extensive"
+
+# Snapchat
+snapchat:
+  name: "Snapchat"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "35.186.224.25/32"
+    - "35.201.89.123/32"
+    - "35.233.176.15/32"
+  domains:
+    - "snapchat.com"
+    - "sc-cdn.net"
+  privacy_concerns: "medium"
+  ephemeral_content: true
+
+# LinkedIn
+linkedin:
+  name: "LinkedIn"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "13.107.42.14/32"
+    - "108.174.10.10/32"
+    - "144.2.201.0/24"
+  domains:
+    - "linkedin.com"
+    - "licdn.com"
+  privacy_concerns: "medium"
+  professional_network: true
+
+# Reddit
+reddit:
+  name: "Reddit"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "151.101.0.0/16"
+    - "199.232.0.0/16"
+  domains:
+    - "reddit.com"
+    - "redd.it"
+    - "redditmedia.com"
+  privacy_concerns: "low"
+  anonymous_friendly: true
+
+# Pinterest
+pinterest:
+  name: "Pinterest"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "151.101.0.0/16"
+    - "199.232.0.0/16"
+  domains:
+    - "pinterest.com"
+    - "pinimg.com"
+  privacy_concerns: "medium"
+  tracking: "moderate"
+
+# Communication Platforms
+slack:
+  name: "Slack"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "3.33.236.0/25"
+    - "52.25.0.0/16"
+    - "54.230.0.0/15"
+    - "99.181.64.0/18"
+  domains:
+    - "slack.com"
+    - "slack-edge.com"
+    - "slack-files.com"
+    - "slack-imgs.com"
+  business_focused: true
+  privacy_concerns: "low"
+
+teams:
+  name: "Microsoft Teams"
+  tcp_ports: [443, 80]
+  udp_ports: [3478-3481, 50000-59999]
+  ip_ranges:
+    - "13.107.64.0/18"
+    - "52.112.0.0/14"
+    - "52.122.0.0/15"
+  domains:
+    - "teams.microsoft.com"
+    - "teams.live.com"
+    - "skype.com"
+  business_focused: true
+  privacy_concerns: "low"
+
+zoom:
+  name: "Zoom"
+  tcp_ports: [443, 80]
+  udp_ports: [8801-8810]
+  ip_ranges:
+    - "3.7.35.0/25"
+    - "3.21.137.128/25"
+    - "3.235.69.0/25"
+    - "50.239.202.0/23"
+  domains:
+    - "zoom.us"
+    - "zoomgov.com"
+  business_focused: true
+  privacy_concerns: "medium"
+
+# Messaging Apps
+signal:
+  name: "Signal"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "76.223.92.165/32"
+    - "13.248.212.111/32"
+  domains:
+    - "signal.org"
+  privacy_focused: true
+  encryption: "end_to_end"
+  open_source: true
+
+telegram:
+  name: "Telegram"
+  tcp_ports: [443, 80]
+  udp_ports: []
+  ip_ranges:
+    - "91.108.4.0/22"
+    - "91.108.8.0/22"
+    - "91.108.12.0/22"
+    - "91.108.16.0/22"
+  domains:
+    - "telegram.org"
+    - "t.me"
+  privacy_concerns: "low"
+  encryption: "optional_end_to_end"
