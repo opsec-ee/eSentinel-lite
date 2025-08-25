@@ -1,0 +1,92 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: ProtonVPN Configuration
+# Description: ProtonVPN provider settings and endpoints
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+provider:
+  name: "ProtonVPN"
+  description: "Security-focused VPN from ProtonMail team"
+  website: "https://protonvpn.com"
+  api_endpoint: "https://api.protonmail.ch/vpn/logicals"
+
+# Protocol support
+protocols:
+  wireguard:
+    ports: [51820]
+    preferred: true
+    performance: "very_good"
+  openvpn:
+    ports: [443, 1194]
+    performance: "good"
+  ikev2:
+    ports: [500, 4500]
+    performance: "good"
+
+# Key features
+features:
+  - "no_logs"
+  - "kill_switch"
+  - "secure_core"
+  - "tor_over_vpn"
+  - "open_source_apps"
+  - "swiss_privacy_laws"
+  - "protonmail_integration"
+
+# Ratings
+ratings:
+  privacy: "excellent"
+  speed: "good"
+  price: "fair"
+  ease_of_use: "good"
+
+# Recommended use cases
+recommended_for:
+  - "privacy"
+  - "security"
+  - "activism"
+  - "journalism"
+
+# Login servers (for firewall rules)
+login_servers:
+  ipv4_ranges:
+    - "185.70.40.0/22"
+    - "146.70.124.0/22"
+  domains:
+    - "protonvpn.com"
+    - "api.protonmail.ch"
+
+# DNS servers provided by ProtonVPN
+dns_servers:
+  ipv4:
+    - "10.2.0.1"
+  ipv6: []
+  features:
+    - "malware_blocking"
+    - "ad_blocking"
+
+# Secure Core servers (double-hop)
+secure_core:
+  enabled: true
+  countries: ["switzerland", "iceland", "sweden"]
+  description: "Traffic routed through privacy-friendly countries first"
+
+# Configuration hints
+configuration:
+  kill_switch: "mandatory"
+  leak_protection: "ipv4_ipv6_dns"
+  auto_connect: "recommended"
+  protocol_preference: "wireguard"
+  server_selection: "secure_core_recommended"
+
+# Pricing (for reference)
+pricing:
+  monthly: "$9.99/month"
+  free_tier: "limited_servers"
+  payment_methods: ["card", "paypal", "bitcoin"]
+  money_back_guarantee: "30_days"

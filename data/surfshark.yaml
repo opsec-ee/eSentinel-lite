@@ -1,0 +1,112 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: Surfshark Configuration
+# Description: Surfshark VPN provider settings and endpoints
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+provider:
+  name: "Surfshark"
+  description: "Budget-friendly VPN with unlimited devices"
+  website: "https://surfshark.com"
+  api_endpoint: null  # No public API available
+
+# Protocol support
+protocols:
+  wireguard:
+    ports: [51820]
+    preferred: true
+    performance: "very_good"
+  openvpn:
+    ports: [443, 1194]
+    performance: "good"
+  ikev2:
+    ports: [500, 4500]
+    performance: "good"
+
+# Key features
+features:
+  - "no_logs"
+  - "kill_switch"
+  - "unlimited_devices"
+  - "cleanweb_filtering"
+  - "multihop"
+  - "camouflage_mode"
+  - "whitelister_split_tunneling"
+
+# Ratings
+ratings:
+  privacy: "good"
+  speed: "very_good"
+  price: "excellent"
+  ease_of_use: "very_good"
+
+# Recommended use cases
+recommended_for:
+  - "budget"
+  - "families"
+  - "general"
+  - "multiple_devices"
+
+# Login servers (estimated ranges)
+login_servers:
+  ipv4_ranges:
+    - "91.239.100.0/24"
+    - "37.120.192.0/19"
+    - "185.225.28.0/22"
+  domains:
+    - "surfshark.com"
+    - "api.surfshark.com"
+
+# DNS servers provided by Surfshark
+dns_servers:
+  ipv4:
+    - "162.252.172.57"
+    - "149.154.159.92"
+  ipv6: []
+  features:
+    - "malware_blocking"
+    - "ad_blocking"
+    - "tracker_blocking"
+
+# CleanWeb feature
+cleanweb:
+  enabled: true
+  blocks:
+    - "ads"
+    - "trackers"
+    - "malware"
+    - "phishing"
+
+# MultiHop (double VPN)
+multihop:
+  enabled: true
+  description: "Route through two VPN servers"
+  performance_impact: "moderate"
+
+# Configuration hints
+configuration:
+  kill_switch: "recommended"
+  leak_protection: "ipv4_ipv6_dns"
+  auto_connect: "available"
+  protocol_preference: "wireguard"
+  server_selection: "fastest_server"
+  unlimited_devices: true
+
+# Pricing (for reference)
+pricing:
+  monthly: "$12.95/month"
+  long_term: "~$2.30/month"
+  payment_methods: ["card", "paypal", "crypto", "google_pay"]
+  free_trial: "7_days"
+  money_back_guarantee: "30_days"
+
+# Manual server configuration
+manual_config:
+  note: "Server list must be manually maintained"
+  update_frequency: "monthly"
+  config_source: "surfshark_app_or_website"

@@ -1,0 +1,97 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: VPN Providers Index
+# Description: Index of supported VPN providers
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+# Default recommended provider for eSentinel Lite
+default_provider: "mullvad"
+recommended_providers: ["mullvad", "protonvpn", "nordvpn"]
+
+# Supported providers with file references
+providers:
+  mullvad:
+    file: "mullvad.yaml"
+    status: "fully_supported"
+    api_integration: true
+    auto_update: true
+
+  nordvpn:
+    file: "nordvpn.yaml"
+    status: "supported"
+    api_integration: false
+    auto_update: false
+
+  protonvpn:
+    file: "protonvpn.yaml"
+    status: "supported"
+    api_integration: false
+    auto_update: false
+
+  expressvpn:
+    file: "expressvpn.yaml"
+    status: "basic_support"
+    api_integration: false
+    auto_update: false
+
+  surfshark:
+    file: "surfshark.yaml"
+    status: "basic_support"
+    api_integration: false
+    auto_update: false
+
+# Protocol support matrix
+protocols:
+  wireguard:
+    name: "WireGuard"
+    description: "Modern, fast VPN protocol"
+    default_port: 51820
+    performance: "excellent"
+    security: "excellent"
+    recommended: true
+    supported_by: ["mullvad", "nordvpn", "protonvpn", "surfshark"]
+
+  openvpn:
+    name: "OpenVPN"
+    description: "Established, reliable VPN protocol"
+    default_ports: [443, 1194]
+    performance: "good"
+    security: "excellent"
+    widely_supported: true
+    supported_by: ["mullvad", "nordvpn", "protonvpn", "expressvpn"]
+
+  ikev2:
+    name: "IKEv2/IPSec"
+    description: "Fast protocol, good for mobile"
+    default_ports: [500, 4500]
+    performance: "very_good"
+    security: "very_good"
+    mobile_optimized: true
+    supported_by: ["nordvpn", "protonvpn", "expressvpn"]
+
+# Emergency DNS servers (when VPN is down)
+emergency_dns:
+  quad9:
+    ipv4: ["9.9.9.9", "149.112.112.112"]
+    ipv6: ["2620:fe::fe", "2620:fe::9"]
+    privacy_focused: true
+    malware_blocking: true
+
+  cloudflare:
+    ipv4: ["1.1.1.1", "1.0.0.1"]
+    ipv6: ["2606:4700:4700::1111", "2606:4700:4700::1001"]
+    performance_focused: true
+    privacy_friendly: true
+
+# Provider selection guidance
+selection_guide:
+  privacy_focused: ["mullvad", "protonvpn"]
+  gaming_optimized: ["nordvpn", "mullvad"]
+  streaming_optimized: ["nordvpn", "expressvpn"]
+  budget_friendly: ["surfshark", "mullvad"]
+  beginner_friendly: ["nordvpn", "expressvpn"]

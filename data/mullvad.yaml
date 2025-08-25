@@ -1,0 +1,90 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: Mullvad VPN Configuration
+# Description: Mullvad VPN provider settings and endpoints
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+provider:
+  name: "Mullvad VPN"
+  description: "Privacy-focused VPN with WireGuard support"
+  website: "https://mullvad.net"
+  api_endpoint: "https://api.mullvad.net/www/relays/wireguard/"
+  recommended: true
+
+# Protocol support
+protocols:
+  wireguard:
+    ports: [51820]
+    preferred: true
+    performance: "excellent"
+  openvpn:
+    ports: [443, 1194]
+    fallback: true
+    performance: "good"
+
+# Key features
+features:
+  - "no_logs"
+  - "anonymous_signup"
+  - "port_forwarding"
+  - "kill_switch"
+  - "multihop"
+  - "wireguard_native"
+  - "own_infrastructure"
+
+# Ratings
+ratings:
+  privacy: "excellent"
+  speed: "very_good"
+  price: "fair"
+  ease_of_use: "good"
+
+# Recommended use cases
+recommended_for:
+  - "privacy"
+  - "gaming"
+  - "general"
+  - "torrenting"
+
+# Login servers (for firewall rules)
+login_servers:
+  ipv4:
+    - "34.213.106.51"
+    - "35.165.110.231"
+  domains:
+    - "api.mullvad.net"
+    - "mullvad.net"
+
+# DNS servers provided by Mullvad
+dns_servers:
+  ipv4:
+    - "100.64.0.1"
+    - "100.64.0.2"
+    - "100.64.0.7"
+  ipv6:
+    - "fd00::1"
+    - "fd00::2"
+  features:
+    - "malware_blocking"
+    - "ad_blocking"
+    - "tracker_blocking"
+
+# Configuration hints
+configuration:
+  kill_switch: "mandatory"
+  leak_protection: "ipv4_ipv6_dns"
+  auto_connect: "recommended"
+  protocol_preference: "wireguard"
+  server_selection: "auto_fastest"
+
+# Pricing (for reference)
+pricing:
+  monthly: "€5/month"
+  payment_methods: ["crypto", "cash", "card"]
+  free_trial: false
+  money_back_guarantee: "30_days"

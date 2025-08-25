@@ -1,0 +1,114 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: Custom VPN Provider Template
+# Description: Template for adding custom VPN providers
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+# Instructions:
+# 1. Copy this file to: your_vpn_name.yaml
+# 2. Replace all PLACEHOLDER values with your VPN's information
+# 3. Remove unused sections
+# 4. Add the provider to vpn_providers_index.yaml
+
+provider:
+  name: "PLACEHOLDER_VPN_NAME"
+  description: "PLACEHOLDER_DESCRIPTION"
+  website: "https://PLACEHOLDER_WEBSITE.com"
+  api_endpoint: null  # Set to API URL if available, or null
+
+# Protocol support - Remove protocols your VPN doesn't support
+protocols:
+  wireguard:
+    ports: [51820]  # Modify ports as needed
+    preferred: true  # Set to true if this is the recommended protocol
+    performance: "excellent"  # excellent, very_good, good, fair
+  openvpn:
+    ports: [443, 1194]  # Common OpenVPN ports
+    performance: "good"
+  ikev2:
+    ports: [500, 4500]  # Standard IKEv2 ports
+    performance: "good"
+
+# Key features - Add/remove features as applicable
+features:
+  - "no_logs"  # Remove if VPN logs data
+  - "kill_switch"
+  # Optional features (uncomment if supported):
+  # - "split_tunneling"
+  # - "multihop"
+  # - "tor_support"
+  # - "ad_blocking"
+  # - "malware_blocking"
+  # - "unlimited_devices"
+  # - "port_forwarding"
+
+# Ratings (1-10 scale or descriptive)
+ratings:
+  privacy: "PLACEHOLDER_PRIVACY_RATING"      # excellent, very_good, good, fair, poor
+  speed: "PLACEHOLDER_SPEED_RATING"          # excellent, very_good, good, fair, poor
+  price: "PLACEHOLDER_PRICE_RATING"          # excellent, very_good, good, fair, expensive
+  ease_of_use: "PLACEHOLDER_EASE_RATING"     # excellent, very_good, good, fair, poor
+
+# Recommended use cases
+recommended_for:
+  - "general"  # Keep this, add others as applicable:
+  # - "privacy"
+  # - "gaming"
+  # - "streaming"
+  # - "business"
+  # - "budget"
+
+# Login servers (for firewall rules)
+login_servers:
+  ipv4_ranges:
+    - "PLACEHOLDER_IP_RANGE_1"  # e.g., "203.0.113.0/24"
+    - "PLACEHOLDER_IP_RANGE_2"  # Add more as needed
+  domains:
+    - "PLACEHOLDER_DOMAIN_1"    # e.g., "api.yourvpn.com"
+    - "PLACEHOLDER_DOMAIN_2"    # e.g., "yourvpn.com"
+
+# DNS servers provided by your VPN
+dns_servers:
+  ipv4:
+    - "PLACEHOLDER_DNS_1"       # e.g., "10.0.0.1"
+    - "PLACEHOLDER_DNS_2"       # e.g., "10.0.0.2"
+  ipv6:
+    - "PLACEHOLDER_DNS_IPV6"    # Add IPv6 DNS if supported, or remove section
+  features:
+    # Uncomment features your DNS supports:
+    # - "malware_blocking"
+    # - "ad_blocking"
+    # - "tracker_blocking"
+
+# Configuration hints
+configuration:
+  kill_switch: "PLACEHOLDER_KILL_SWITCH"      # "mandatory", "recommended", "optional", "unavailable"
+  leak_protection: "PLACEHOLDER_LEAK_PROTECT" # "ipv4_ipv6_dns", "ipv4_ipv6", "ipv4", "none"
+  auto_connect: "PLACEHOLDER_AUTO_CONNECT"     # "available", "unavailable"
+  protocol_preference: "PLACEHOLDER_PROTOCOL" # "wireguard", "openvpn", "ikev2"
+  server_selection: "PLACEHOLDER_SELECTION"   # "auto", "manual", "fastest"
+
+# Pricing (for reference)
+pricing:
+  monthly: "PLACEHOLDER_MONTHLY_PRICE"       # e.g., "$9.99/month"
+  payment_methods: ["card"]                   # Add supported methods: "paypal", "crypto", etc.
+  free_trial: "PLACEHOLDER_FREE_TRIAL"       # "7_days", "30_days", false
+  money_back_guarantee: "PLACEHOLDER_GUARANTEE" # "30_days", "7_days", false
+
+# Manual server configuration (if no API available)
+manual_config:
+  note: "Server list must be manually maintained"
+  update_frequency: "monthly"  # How often to update server list
+  config_source: "PLACEHOLDER_CONFIG_SOURCE"  # Where to get server info
+
+# Optional: Special features section
+# special_features:
+#   feature_name:
+#     enabled: true
+#     description: "Description of special feature"
+#     configuration: "any special config needed"

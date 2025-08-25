@@ -1,0 +1,102 @@
+#===============================================================
+# eSentinel™ Lite
+# Name: ExpressVPN Configuration
+# Description: ExpressVPN provider settings and endpoints
+# Version: 1.0.0
+#
+# Copyright 2025 H.Overman <opsec.ee@pm.me>
+# Licensed under Apache License, Version 2.0
+# eSentinel is a trademark of H.Overman.
+#===============================================================
+
+provider:
+  name: "ExpressVPN"
+  description: "Fast VPN with proprietary Lightway protocol"
+  website: "https://expressvpn.com"
+  api_endpoint: null  # No public API available
+
+# Protocol support
+protocols:
+  lightway:
+    ports: [443]
+    proprietary: true
+    preferred: true
+    performance: "excellent"
+  openvpn:
+    ports: [443, 1194]
+    performance: "very_good"
+  ikev2:
+    ports: [500, 4500]
+    performance: "good"
+
+# Key features
+features:
+  - "no_logs"
+  - "kill_switch"
+  - "split_tunneling"
+  - "threat_manager"
+  - "lightway_protocol"
+  - "mediastreamer_dns"
+  - "24_7_support"
+
+# Ratings
+ratings:
+  privacy: "very_good"
+  speed: "excellent"
+  price: "expensive"
+  ease_of_use: "excellent"
+
+# Recommended use cases
+recommended_for:
+  - "streaming"
+  - "business"
+  - "travel"
+  - "beginners"
+
+# Login servers (estimated ranges)
+login_servers:
+  ipv4_ranges:
+    - "149.154.164.0/22"
+    - "149.154.168.0/22"
+    - "103.231.88.0/22"
+  domains:
+    - "expressvpn.com"
+    - "lightway.expressvpn.com"
+
+# DNS servers (ExpressVPN's own)
+dns_servers:
+  ipv4:
+    - "198.18.0.2"
+    - "198.18.0.3"
+  ipv6: []
+  features:
+    - "leak_protection"
+
+# MediaStreamer (Smart DNS)
+mediastreamer:
+  enabled: true
+  dns_servers:
+    - "198.18.0.200"
+    - "198.18.0.201"
+  purpose: "streaming_optimization"
+
+# Configuration hints
+configuration:
+  kill_switch: "network_lock"
+  leak_protection: "ipv4_ipv6_dns_webrtc"
+  auto_connect: "available"
+  protocol_preference: "lightway"
+  server_selection: "smart_location"
+
+# Pricing (for reference)
+pricing:
+  monthly: "$12.95/month"
+  payment_methods: ["card", "paypal", "bitcoin"]
+  free_trial: false
+  money_back_guarantee: "30_days"
+
+# Manual server configuration (since no API)
+manual_config:
+  note: "Server list must be manually maintained"
+  update_frequency: "monthly"
+  config_source: "expressvpn_app_or_website"
