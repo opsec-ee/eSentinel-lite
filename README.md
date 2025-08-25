@@ -19,4 +19,6 @@ The eSentinel name and any logos may not be used in derivative works without exp
 
 eSentinel™ Pro is available with additional enterprise features, commercial support, and licensing options suitable for business use.
 
+![eSentinel](images/eSentinel_Versions.png)
+
 For commercial licensing inquiries: **opsec.ee@pm.me**
