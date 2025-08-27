@@ -5,7 +5,7 @@
 **A Lightweight VPN-First Firewall Security Framework for Linux**
 
 ## System Architecture
-[Interactive Architecture Visualization](docs/architecture.html) - Comprehensive system component relationships and data flow analysis.
+[Interactive Architecture](https://opsec-ee.github.io/eSentinel-lite/architecture.html) - Comprehensive system component relationships and data flow analysis.
 
 ## License
 
