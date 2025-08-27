@@ -4,6 +4,9 @@
 
 **A Lightweight VPN-First Firewall Security Framework for Linux**
 
+## System Architecture
+[Interactive Architecture Visualization](docs/architecture.html) - Comprehensive system component relationships and data flow analysis.
+
 ## License
 
 eSentinel™ Lite is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for the full license text.
