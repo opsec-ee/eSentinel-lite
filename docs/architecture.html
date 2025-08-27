@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eSentinel Architecture & Data Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            color: #64ffda;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+        }
+
+        .timestamp {
+            color: #bb86fc;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .layer {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .layer h2 {
+            color: #64ffda;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+        }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .file-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(100, 255, 218, 0.2);
+            border-color: #64ffda;
+        }
+
+        .file-name {
+            color: #bb86fc;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .python-file { background: linear-gradient(45deg, #306998, #ffd43b); }
+        .html-file { background: linear-gradient(45deg, #e34c26, #f06529); }
+        .js-file { background: linear-gradient(45deg, #f7df1e, #323330); }
+        .css-file { background: linear-gradient(45deg, #1572b6, #33a9dc); }
+        .yaml-file { background: linear-gradient(45deg, #cb171e, #f1f1f1); }
+        .service-file { background: linear-gradient(45deg, #262626, #7ab800); }
+
+        .file-job {
+            color: #e0e6ed;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .file-connections {
+            font-size: 0.85em;
+            color: #a0a0a0;
+            margin-top: 10px;
+        }
+
+        .connection-type {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .calls { color: #4ecdc4; }
+        .sends-to { color: #ffe66d; }
+
+        .data-flow-arrows {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            font-size: 2em;
+            color: #64ffda;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .legend-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 4px solid;
+        }
+
+        .legend-entry { border-left-color: #bb86fc; }
+        .legend-core { border-left-color: #64ffda; }
+        .legend-monitoring { border-left-color: #ff6b6b; }
+        .legend-hardware { border-left-color: #ffe66d; }
+        .legend-web { border-left-color: #4ecdc4; }
+
+        @media (max-width: 768px) {
+            .file-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        .flow-visualization {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            border-left: 4px solid #64ffda;
+        }
+
+        .flow-number {
+            background: #64ffda;
+            color: #0f0f23;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ eSentinel Project Architecture</h1>
+            <div class="timestamp">Wednesday, August 27, 2025, 7:45 PM EST</div>
+            <p>Comprehensive File Responsibilities & Data Flow Analysis</p>
+        </div>
+
+        <!-- Data Flow Visualization -->
+        <div class="flow-visualization">
+            <h2 style="color: #64ffda; text-align: center; margin-bottom: 20px;">🔄 Primary Data Flow Progression</h2>
+            
+            <div class="flow-step">
+                <div class="flow-number">1</div>
+                <div>
+                    <strong>Threat Intelligence Collection</strong><br>
+                    <code>update_esentinel.py</code> → VPNFetcher & ThreatFetcher → External APIs
+                </div>
+            </div>
+            
+            <div class="flow-step">
+                <div class="flow-number">2</div>
+                <div>
+                    <strong>Adaptive Processing</strong><br>
+                    <code>adaptive_set_manager.py</code> → Analyzes data characteristics → Backend selection
+                </div>
+            </div>
+            
+            <div class="flow-step">
+                <div class="flow-number">3</div>
+                <div>
+                    <strong>Profile Integration</strong><br>
+                    <code>profile_integration_manager.py</code> → Profile selection & deployment → System configuration
+                </div>
+            </div>
+            
+            <div class="flow-step">
+                <div class="flow-number">4</div>
+                <div>
+                    <strong>Rule Generation</strong><br>
+                    <code>enhanced_nftables_generator.py</code> → Policy → nftables rules → System firewall
+                </div>
+            </div>
+            
+            <div class="flow-step">
+                <div class="flow-number">5</div>
+                <div>
+                    <strong>Monitoring & Feedback</strong><br>
+                    <code>monitoring/*</code> → System metrics → Dashboard → User interface
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <!-- Entry Points Layer -->
+            <div class="layer">
+                <h2>🚪 Entry Points & Main Controllers</h2>
+                <div class="file-grid">
+                    <div class="file-box pulse">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            update_esentinel.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Primary threat intelligence updater</strong><br>
+                            Fetches VPN servers & threat IPs from external sources, updates nftables sets atomically with backup/restore capability
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> VPNFetcher, ThreatFetcher, NFTablesUpdater<br>
+                            <span class="connection-type sends-to">Sends to:</span> /etc/nftables.conf, system firewall
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            enhanced_nftables_generator.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Advanced rule generation engine</strong><br>
+                            Converts high-level security profiles into comprehensive nftables configurations with optimization
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> ConfigurationManager, NFTablesRuleEngine<br>
+                            <span class="connection-type sends-to">Sends to:</span> nftables configuration, system deployment
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            profile_integration_manager.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Central orchestration hub</strong><br>
+                            Manages profile deployment, system integration, health monitoring, and emergency recovery
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> All core components<br>
+                            <span class="connection-type sends-to">Sends to:</span> System configuration, monitoring systems
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            adaptive_set_manager.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Backend optimization engine</strong><br>
+                            Intelligently selects storage backends (nftables vs ipset) based on data characteristics and performance
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> System capability detection<br>
+                            <span class="connection-type sends-to">Sends to:</span> nftables sets, ipset instances
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            web/app.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Web interface server</strong><br>
+                            Flask-based web dashboard providing real-time monitoring, configuration management, and system control
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Dashboard data collectors, API endpoints<br>
+                            <span class="connection-type sends-to">Sends to:</span> Web templates, WebSocket clients
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow-arrows">⬇️ ⬇️ ⬇️</div>
+
+            <!-- Core Engine Layer -->
+            <div class="layer">
+                <h2>⚙️ Core Engine Components</h2>
+                <div class="file-grid">
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            core/engine/rule_engine.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Rule generation logic</strong><br>
+                            Converts high-level security policies into optimized nftables rules with performance considerations
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Template processor, validation engine<br>
+                            <span class="connection-type sends-to">Sends to:</span> Configuration files, deployment system
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            core/engine/config_manager.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Configuration orchestrator</strong><br>
+                            Loads, validates, and manages profile configurations with schema validation and error handling
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Profile loaders, validation systems<br>
+                            <span class="connection-type sends-to">Sends to:</span> Rule engine, all core components
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            core/engine/template_processor.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Template rendering engine</strong><br>
+                            Processes YAML profiles and templates into executable configurations with variable substitution
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> YAML parsers, validation functions<br>
+                            <span class="connection-type sends-to">Sends to:</span> Config manager, rule generation
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            core/engine/validation.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Configuration validator</strong><br>
+                            Validates configurations, checks syntax, and ensures compatibility before deployment
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> nftables syntax checker<br>
+                            <span class="connection-type sends-to">Sends to:</span> Deployment approval, error reporting
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow-arrows">⬇️ ⬇️ ⬇️</div>
+
+            <!-- Detection & Intelligence Layer -->
+            <div class="layer">
+                <h2>🔍 Detection & Intelligence Systems</h2>
+                <div class="file-grid">
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            core/detection/threat_detector.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Real-time threat detection</strong><br>
+                            Analyzes network traffic patterns, detects anomalies, and identifies security threats in real-time
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Behavioral analysis, ML models<br>
+                            <span class="connection-type sends-to">Sends to:</span> Alert manager, threat intelligence DB
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            core/detection/behavioral_analysis.py
+                        </div>
+                        <div class="file-job">
+                            <strong>AI behavior analysis</strong><br>
+                            Uses machine learning to detect unusual network patterns and potential security threats
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> ML models, pattern recognition<br>
+                            <span class="connection-type sends-to">Sends to:</span> Threat scoring, alert system
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            monitoring/threat_intelligence.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Threat intelligence aggregator</strong><br>
+                            Collects and processes threat data from multiple external sources for real-time protection
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> External threat feeds, reputation APIs<br>
+                            <span class="connection-type sends-to">Sends to:</span> Adaptive set manager, threat detector
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            core/ai/ml_adversary_detection.py
+                        </div>
+                        <div class="file-job">
+                            <strong>AI adversary detection</strong><br>
+                            Advanced machine learning models for detecting sophisticated adversary techniques and APTs
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Training data, pattern recognition<br>
+                            <span class="connection-type sends-to">Sends to:</span> Threat detector, alert system
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow-arrows">⬇️ ⬇️ ⬇️</div>
+
+            <!-- Monitoring & Analytics Layer -->
+            <div class="layer">
+                <h2>📊 Monitoring & Analytics Systems</h2>
+                <div class="file-grid">
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            monitoring/metrics_collector.py
+                        </div>
+                        <div class="file-job">
+                            <strong>System metrics aggregator</strong><br>
+                            Collects performance, security, and system metrics for monitoring and analysis
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> System APIs, performance monitors<br>
+                            <span class="connection-type sends-to">Sends to:</span> Dashboard, exporters (Prometheus/Grafana)
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            monitoring/log_analyzer.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Log processing engine</strong><br>
+                            Analyzes system and application logs for security events, patterns, and anomalies
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Log parsers, pattern matchers<br>
+                            <span class="connection-type sends-to">Sends to:</span> Alert manager, dashboard data
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            monitoring/alert_manager.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Alert orchestrator</strong><br>
+                            Processes security alerts, manages notification workflows, and handles escalation procedures
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Notification systems, escalation rules<br>
+                            <span class="connection-type sends-to">Sends to:</span> External notifications, dashboard
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            monitoring/dashboard_data.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Dashboard data provider</strong><br>
+                            Aggregates and formats data for web dashboard display and real-time updates
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Metrics collector, log analyzer<br>
+                            <span class="connection-type sends-to">Sends to:</span> Web interface, WebSocket clients
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow-arrows">⬇️ ⬇️ ⬇️</div>
+
+            <!-- Hardware & Performance Layer -->
+            <div class="layer">
+                <h2>🔧 Hardware Abstraction & Performance</h2>
+                <div class="file-grid">
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            hardware/hal/packet_processor.py
+                        </div>
+                        <div class="file-job">
+                            <strong>Hardware packet processing</strong><br>
+                            Interfaces with hardware acceleration for high-speed packet inspection and processing
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Hardware drivers, FPGA interfaces<br>
+                            <span class="connection-type sends-to">Sends to:</span> Detection systems, performance monitor
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            hardware/fpga_acceleration/rule_processing.py
+                        </div>
+                        <div class="file-job">
+                            <strong>FPGA rule acceleration</strong><br>
+                            Implements high-speed rule matching and processing using FPGA hardware acceleration
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Rule engine, hardware interfaces<br>
+                            <span class="connection-type sends-to">Sends to:</span> Network interface, packet processor
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            hardware/high_performance/dpdk_integration.py
+                        </div>
+                        <div class="file-job">
+                            <strong>DPDK high-performance networking</strong><br>
+                            Integrates with DPDK for kernel-bypass networking and ultra-low latency packet processing
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> DPDK libraries, network drivers<br>
+                            <span class="connection-type sends-to">Sends to:</span> Packet processor, performance monitor
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon python-file"></div>
+                            ha/cluster_manager.py
+                        </div>
+                        <div class="file-job">
+                            <strong>High availability coordinator</strong><br>
+                            Manages multi-node deployments, cluster coordination, and distributed system operations
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Node health checkers, consensus algorithms<br>
+                            <span class="connection-type sends-to">Sends to:</span> Load balancer, failover controller
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow-arrows">⬇️ ⬇️ ⬇️</div>
+
+            <!-- Web Interface Layer -->
+            <div class="layer">
+                <h2>🌐 Web Interface & User Experience</h2>
+                <div class="file-grid">
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon js-file"></div>
+                            web/static/js/dashboard.js
+                        </div>
+                        <div class="file-job">
+                            <strong>Dashboard frontend controller</strong><br>
+                            Handles real-time dashboard updates, user interactions, and WebSocket communications
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> WebSocket APIs, chart libraries<br>
+                            <span class="connection-type sends-to">Sends to:</span> DOM updates, backend API requests
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon js-file"></div>
+                            web/static/js/charts.js
+                        </div>
+                        <div class="file-job">
+                            <strong>Data visualization engine</strong><br>
+                            Creates interactive charts and graphs for security metrics, performance data, and system status
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Chart.js, D3.js libraries<br>
+                            <span class="connection-type sends-to">Sends to:</span> Canvas elements, SVG containers
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon html-file"></div>
+                            web/templates/dashboard/monitoring.html
+                        </div>
+                        <div class="file-job">
+                            <strong>Monitoring interface template</strong><br>
+                            Displays real-time system monitoring, threat detection status, and security metrics
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Jinja2 template engine<br>
+                            <span class="connection-type sends-to">Sends to:</span> Browser rendering, user interface
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon css-file"></div>
+                            web/static/css/dashboard.css
+                        </div>
+                        <div class="file-job">
+                            <strong>Dashboard styling framework</strong><br>
+                            Provides responsive design, dark theme, and modern UI styling for the dashboard interface
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> CSS3 features, flexbox/grid<br>
+                            <span class="connection-type sends-to">Sends to:</span> Browser rendering engine
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-flow-arrows">⬇️ ⬇️ ⬇️</div>
+
+            <!-- Configuration & Profiles Layer -->
+            <div class="layer">
+                <h2>📋 Configuration & Profile Management</h2>
+                <div class="file-grid">
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon yaml-file"></div>
+                            profiles/personal/home_office.yaml
+                        </div>
+                        <div class="file-job">
+                            <strong>Home office security profile</strong><br>
+                            Balanced security configuration for remote workers with VPN integration and productivity apps
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Template processor, validation<br>
+                            <span class="connection-type sends-to">Sends to:</span> Profile integration manager, rule engine
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon yaml-file"></div>
+                            profiles/personal/gaming.yaml
+                        </div>
+                        <div class="file-job">
+                            <strong>Gaming optimization profile</strong><br>
+                            Low-latency configuration optimized for gaming with specific port ranges and QoS settings
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Performance optimization<br>
+                            <span class="connection-type sends-to">Sends to:</span> Gaming traffic prioritization, rule engine
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon yaml-file"></div>
+                            profiles/enterprise/corporate_gateway.yaml
+                        </div>
+                        <div class="file-job">
+                            <strong>Enterprise gateway profile</strong><br>
+                            High-security configuration for corporate environments with compliance and audit requirements
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> Compliance frameworks, audit logging<br>
+                            <span class="connection-type sends-to">Sends to:</span> Enterprise deployment, compliance systems
+                        </div>
+                    </div>
+
+                    <div class="file-box">
+                        <div class="file-name">
+                            <div class="file-icon service-file"></div>
+                            esentinel-monitor.service
+                        </div>
+                        <div class="file-job">
+                            <strong>System service definition</strong><br>
+                            Systemd service configuration for continuous monitoring with health checking and auto-restart
+                        </div>
+                        <div class="file-connections">
+                            <span class="connection-type calls">Calls:</span> System init, health checkers<br>
+                            <span class="connection-type sends-to">Sends to:</span> Process management, system integration
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Flow Summary -->
+        <div class="flow-visualization">
+            <h2 style="color: #64ffda; text-align: center; margin-bottom: 20px;">📊 Complete System Data Flow Summary</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: rgba(100, 255, 218, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #64ffda;">
+                    <h3 style="color: #64ffda; margin-bottom: 10px;">🔄 Data Ingestion</h3>
+                    <p style="font-size: 0.9em;">External threat feeds → update_esentinel.py → Adaptive processing → System storage</p>
+                </div>
+                
+                <div style="background: rgba(187, 134, 252, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #bb86fc;">
+                    <h3 style="color: #bb86fc; margin-bottom: 10px;">⚙️ Configuration Flow</h3>
+                    <p style="font-size: 0.9em;">YAML profiles → Template processing → Rule generation → nftables deployment</p>
+                </div>
+                
+                <div style="background: rgba(255, 107, 107, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #ff6b6b;">
+                    <h3 style="color: #ff6b6b; margin-bottom: 10px;">🔍 Monitoring Flow</h3>
+                    <p style="font-size: 0.9em;">Network traffic → Detection engines → Alert processing → Dashboard display</p>
+                </div>
+                
+                <div style="background: rgba(255, 230, 109, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #ffe66d;">
+                    <h3 style="color: #ffe66d; margin-bottom: 10px;">🌐 User Interface</h3>
+                    <p style="font-size: 0.9em;">Backend data → API endpoints → Web interface → User interactions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item legend-entry">
+                <h3>🚪 Entry Points</h3>
+                <p>Main application controllers and primary system interfaces</p>
+            </div>
+            <div class="legend-item legend-core">
+                <h3>⚙️ Core Engine</h3>
+                <p>Central processing components for rule generation and configuration</p>
+            </div>
+            <div class="legend-item legend-monitoring">
+                <h3>🔍 Detection & Monitoring</h3>
+                <p>Threat detection, behavioral analysis, and system monitoring components</p>
+            </div>
+            <div class="legend-item legend-hardware">
+                <h3>🔧 Hardware & Performance</h3>
+                <p>Hardware acceleration, high availability, and performance optimization</p>
+            </div>
+            <div class="legend-item legend-web">
+                <h3>🌐 Web Interface</h3>
+                <p>User interface components, dashboards, and visualization systems</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 12px;">
+            <h3 style="color: #64ffda; margin-bottom: 10px;">🛡️ eSentinel Architecture Overview</h3>
+            <p style="color: #e0e6ed; line-height: 1.6;">
+                eSentinel employs a modular, layered architecture with intelligent data flow management. 
+                The system processes threat intelligence through adaptive backends, generates optimized firewall rules, 
+                and provides comprehensive monitoring with a modern web interface. Each component is designed for 
+                high performance, scalability, and robust security operations.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive elements
+        document.querySelectorAll('.file-box').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                box.style.transform = 'translateY(-8px) scale(1.02)';
+                box.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            
+            box.addEventListener('mouseleave', () => {
+                box.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add pulse animation to critical components
+        setInterval(() => {
+            const pulseElements = document.querySelectorAll('.pulse');
+            pulseElements.forEach(el => {
+                el.style.boxShadow = '0 0 30px rgba(100, 255, 218, 0.4)';
+                setTimeout(() => {
+                    el.style.boxShadow = '';
+                }, 1000);
+            });
+        }, 3000);
+
+        // Smooth scrolling for better UX
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html>
