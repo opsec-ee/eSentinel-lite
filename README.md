@@ -1,3 +1,6 @@
+Current work in progress - Q4 release
+_____________________________________
+
 ![eSentinel](images/eSentinel_Banner.png)
 
 # eSentinel-lite
