@@ -1,4 +1,4 @@
-Current work in progress - Q4 release
+Current work in progress - projected release Q1 2026
 _____________________________________
 
 ![eSentinel](images/eSentinel_Banner.png)
